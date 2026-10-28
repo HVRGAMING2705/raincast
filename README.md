@@ -9,6 +9,6 @@ cloud cover, rain today.
 - `index.html` is a single-page demo: the same coefficients run in JavaScript,
   so the browser demo reproduces the Python model exactly — no backend needed.
 
-Live demo: https://raincast.vercel.app
+Live demo: https://raincast-six.vercel.app
 
 By Vikranth Reddy — B.Tech CSE (AI & ML), Woxsen University.

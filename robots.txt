@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://raincast.vercel.app/sitemap.xml
+Sitemap: https://raincast-six.vercel.app/sitemap.xml
