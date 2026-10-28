@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://raincast.vercel.app/sitemap.xml

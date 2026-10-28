@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RainCast — Rain Tomorrow Predictor | AI/ML Project by Vikranth Reddy</title>
+<meta name="description" content="RainCast predicts whether it will rain tomorrow, from today's temperature, humidity, pressure, wind, cloud cover and rainfall, using logistic regression. Try the interactive browser demo.">
+<meta property="og:title" content="RainCast — Rain Tomorrow Predictor">
+<meta property="og:description" content="Logistic regression predicts tomorrow's rain chance in seconds. Try the interactive demo.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://raincast.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RainCast — Rain Tomorrow Predictor">
+<meta name="twitter:description" content="Logistic regression predicts tomorrow's rain chance in seconds.">
+<link rel="canonical" href="https://raincast.vercel.app/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"RainCast","applicationCategory":"AI/ML demo","author":{"@type":"Person","name":"Vikranth Reddy"},"description":"Rain-tomorrow predictor using logistic regression."}
+</script>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;color:#000;background:#fff;max-width:760px;margin:0 auto;padding:24px;line-height:1.5}
+h1{font-size:2em;margin-bottom:0}.sub{color:#333;margin-top:4px}
+label{display:block;margin:14px 0 2px;font-weight:bold}
+input,select{width:100%;padding:8px;font-size:16px;border:1px solid #000;border-radius:4px;box-sizing:border-box}
+button{margin-top:18px;padding:12px 24px;font-size:17px;background:#000;color:#fff;border:0;border-radius:4px;cursor:pointer}
+button.preset{background:#fff;color:#000;border:1px solid #000;margin-right:8px}
+#out{margin-top:22px;padding:18px;border:2px solid #000;border-radius:6px;font-size:1.3em}
+small{color:#333}.row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:600px){.row{grid-template-columns:1fr}}
+.bar{height:18px;background:#eee;border:1px solid #000;margin-top:10px}#fill{height:100%;background:#000;width:0%}
+</style>
+</head>
+<body>
+<h1>RainCast</h1>
+<p class="sub">Rain Tomorrow Predictor — logistic regression, trained on 1,000 synthetic weather days. All prediction happens in your browser; no data leaves this page.</p>
+<div class="row">
+<div><label>Max temperature today (°C)</label><input id="maxt" type="number" min="18" max="42" value="32"></div>
+<div><label>Min temperature today (°C)</label><input id="mint" type="number" min="6" max="38" value="22"></div>
+<div><label>Humidity at 3 PM (%)</label><input id="hum" type="number" min="20" max="100" value="85"></div>
+<div><label>Pressure at 9 AM (hPa)</label><input id="pres" type="number" min="990" max="1025" value="998"></div>
+<div><label>Wind speed (km/h)</label><input id="wind" type="number" min="0" max="45" value="25"></div>
+<div><label>Cloud cover (oktas, 0–8)</label><input id="cloud" type="number" min="0" max="8" value="7"></div>
+<div><label>Did it rain today?</label><select id="raint"><option value="0">No</option><option value="1" selected>Yes</option></select></div>
+</div>
+<button onclick="predict()">Predict rain tomorrow</button>
+<div>
+<button class="preset" onclick="preset(32,22,85,998,25,7,1)">Humid stormy day</button>
+<button class="preset" onclick="preset(38,26,35,1018,8,1,0)">Hot dry day</button>
+<button class="preset" onclick="preset(30,21,75,1002,18,6,0)">Mild cloudy day</button>
+</div>
+<div id="out">Enter today's weather and press Predict rain tomorrow.</div>
+<div class="bar"><div id="fill"></div></div>
+<p><small>Model: 5-fold cross-validated accuracy = 76.5%, AUC = 0.85 (guessing the majority class: 50.6% — about 1.5&times; better). A chance above 50% is flagged as rain likely. Trained on synthetic data for learning purposes; real forecasts also use satellite data and numerical weather models.</small></p>
+<p><small>By Vikranth Reddy — B.Tech CSE (AI &amp; ML), Woxsen University. <a href="https://github.com/HVRGAMING2705/raincast">GitHub repo</a></small></p>
+<script>
+const MEANS=[29.93226812468237,21.864303336094213,59.42987572033226,1007.2750275103328,21.867422295928172,3.938,0.534];
+const STDS=[6.994556618167906,7.3636705501118005,23.15412997975047,10.154583546115989,12.677393618609468,2.574908930428413,0.49884266056543103];
+const COEF=[-0.49953635712329136,0.11891946880079966,1.3236270368802592,-0.3548386704265774,0.27224571613120224,1.1052397385519261,0.4219002829972819];
+const INTERCEPT=-0.04556925275456936;
+function modelProb(v){let s=INTERCEPT;for(let i=0;i<7;i++)s+=COEF[i]*((v[i]-MEANS[i])/STDS[i]);return 1/(1+Math.exp(-s));}
+function predict(){const v=[+document.getElementById('maxt').value,+document.getElementById('mint').value,+document.getElementById('hum').value,+document.getElementById('pres').value,+document.getElementById('wind').value,+document.getElementById('cloud').value,+document.getElementById('raint').value];
+const p=modelProb(v);const verdict=p>=0.5?'Rain likely tomorrow — carry an umbrella':'No rain expected tomorrow';
+document.getElementById('out').innerHTML='Rain chance tomorrow: <b>'+(p*100).toFixed(1)+'%</b> — '+verdict;
+document.getElementById('fill').style.width=(p*100)+'%';}
+function preset(a,b,c,d,e,f,g){document.getElementById('maxt').value=a;document.getElementById('mint').value=b;document.getElementById('hum').value=c;document.getElementById('pres').value=d;document.getElementById('wind').value=e;document.getElementById('cloud').value=f;document.getElementById('raint').value=g;predict();}
+</script>
+</body>
+</html>
